@@ -2,9 +2,14 @@
 
 This action uploads a software bill of materials file to a Dependency-Track server.
 
+> [!WARNING]
+> All inputs and outputs were renamed to kebab-case (e.g. `project-name` instead of `projectname`) in v4.2.0.
+> The old names still work, but are deprecated and will be removed in the next major release.
+> Using them causes a deprecation warning. See [Deprecations](#deprecations).
+
 ## Inputs
 
-### `serverhostname`
+### `server-hostname`
 
 **Required** Dependency-Track hostname
 
@@ -18,31 +23,31 @@ Can be `https` or `http`
 
 Defaults to `https`
 
-### `apikey`
+### `api-key`
 
 **Required** Dependency-Track API key
 
 ### `project`
 
-**Required, unless projectName and projectVersion are provided** Project uuid in Dependency-Track
+**Required, unless project-name and project-version are provided** Project uuid in Dependency-Track
 
-### `projectname`
+### `project-name`
 
 **Required, unless project is provided** Project name in Dependency-Track
 
-### `projectversion`
+### `project-version`
 
 **Required, unless project is provided** Project version in Dependency-Track
 
-### `projecttags`
+### `project-tags`
 
 Comma-separated list of tags (available in DT v4.12 and later)
 
-### `autocreate`
+### `auto-create`
 
 Automatically create project and version in Dependency-Track, default `false`
 
-### `bomfilename`
+### `bom-filename`
 
 Path and filename of the BOM, default `bom.xml`
 
@@ -50,27 +55,52 @@ Path and filename of the BOM, default `bom.xml`
 
 Parent project uuid in Dependency-Track (available in DT v4.8 and later)
 
-### `parentname`
+### `parent-name`
 
-**parentVersion is also required** Parent project name in Dependency-Track (available in DT v4.8 and later)
+**parent-version is also required** Parent project name in Dependency-Track (available in DT v4.8 and later)
 
-### `parentversion`
+### `parent-version`
 
-**parentName is also required** Parent project version in Dependency-Track (available in DT v4.8 and later)
+**parent-name is also required** Parent project version in Dependency-Track (available in DT v4.8 and later)
 
-### `isLatest`
+### `is-latest`
 
-Automatically create project and version in Dependency-Track, default `false`
+Mark the uploaded version as latest, default `false`
 
 ## Outputs
 
 ### `token`
 
-`token` reponse from Dependency-Track server after SBOM file has been uploaded
+`token` response from Dependency-Track server after SBOM file has been uploaded
 
-### `projectUuid`
+### `project-uuid`
 
 UUID of the project the BOM was uploaded to (available in Dependency-Track v5.0.0 and later)
+
+## Deprecations
+
+The following names are deprecated as of v4.2.0 and **will be removed in the next major release**.
+Setting a deprecated input causes the action to emit a warning.
+If both names are set, the current one wins.
+
+| Deprecated input | Use instead       |
+|------------------|-------------------|
+| `serverhostname` | `server-hostname` |
+| `apikey`         | `api-key`         |
+| `projectname`    | `project-name`    |
+| `projectversion` | `project-version` |
+| `projecttags`    | `project-tags`    |
+| `autocreate`     | `auto-create`     |
+| `bomfilename`    | `bom-filename`    |
+| `parentname`     | `parent-name`     |
+| `parentversion`  | `parent-version`  |
+| `isLatest`       | `is-latest`       |
+
+| Deprecated output | Use instead    |
+|-------------------|----------------|
+| `projectUuid`     | `project-uuid` |
+
+Both outputs are still populated, so existing workflows keep working until the next major release.
 
 ## Example usage
 
@@ -78,25 +108,25 @@ With project name and version:
 ```yml
 uses: DependencyTrack/gh-upload-sbom@v3
 with:
-  serverhostname: 'example.com'
-  apikey: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
-  projectname: 'Example Project'
-  projectversion: 'master'
-  bomfilename: "/path/to/bom.xml"
-  autocreate: true
+  server-hostname: 'example.com'
+  api-key: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
+  project-name: 'Example Project'
+  project-version: 'master'
+  bom-filename: "/path/to/bom.xml"
+  auto-create: true
 ```
 
 With project name, version and tags:
 ```yml
 uses: DependencyTrack/gh-upload-sbom@v3
 with:
-  serverhostname: 'example.com'
-  apikey: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
-  projectname: 'Example Project'
-  projectversion: 'master'
-  projecttags: 'tag1,tag2'
-  bomfilename: "/path/to/bom.xml"
-  autocreate: true
+  server-hostname: 'example.com'
+  api-key: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
+  project-name: 'Example Project'
+  project-version: 'master'
+  project-tags: 'tag1,tag2'
+  bom-filename: "/path/to/bom.xml"
+  auto-create: true
 ```
 
 With protocol, port and project name:
@@ -104,21 +134,21 @@ With protocol, port and project name:
 uses: DependencyTrack/gh-upload-sbom@v3
 with:
   protocol: ${{ secrets.DEPENDENCYTRACK_PROTOCOL }}
-  serverhostname: ${{ secrets.DEPENDENCYTRACK_HOSTNAME }}
+  server-hostname: ${{ secrets.DEPENDENCYTRACK_HOSTNAME }}
   port: ${{ secrets.DEPENDENCYTRACK_PORT }}
-  apikey: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
-  projectname: 'Example Project'
-  projectversion: 'master'
-  bomfilename: "/path/to/bom.xml"
-  autocreate: true
+  api-key: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
+  project-name: 'Example Project'
+  project-version: 'master'
+  bom-filename: "/path/to/bom.xml"
+  auto-create: true
 ```
 
 With project uuid:
 ```yml
 uses: DependencyTrack/gh-upload-sbom@v3
 with:
-  serverhostname: 'example.com'
-  apikey: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
+  server-hostname: 'example.com'
+  api-key: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
   project: 'dadec8ad-7053-4e8c-8044-7b6ef698e08d'
 ```
 
@@ -127,24 +157,23 @@ With protocol, port, project name and parent name:
 uses: DependencyTrack/gh-upload-sbom@v3
 with:
   protocol: ${{ secrets.DEPENDENCYTRACK_PROTOCOL }}
-  serverhostname: ${{ secrets.DEPENDENCYTRACK_HOSTNAME }}
+  server-hostname: ${{ secrets.DEPENDENCYTRACK_HOSTNAME }}
   port: ${{ secrets.DEPENDENCYTRACK_PORT }}
-  apikey: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
-  projectname: 'Example Project'
-  projectversion: 'master'
-  bomfilename: "/path/to/bom.xml"
-  autocreate: true
-  parentname: 'Example Parent'
-  parentversion: 'master'
+  api-key: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
+  project-name: 'Example Project'
+  project-version: 'master'
+  bom-filename: "/path/to/bom.xml"
+  auto-create: true
+  parent-name: 'Example Parent'
+  parent-version: 'master'
 ```
 
 With parent uuid:
 ```yml
 uses: DependencyTrack/gh-upload-sbom@v3
 with:
-  serverhostname: 'example.com'
-  apikey: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
+  server-hostname: 'example.com'
+  api-key: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
   project: 'dadec8ad-7053-4e8c-8044-7b6ef698e08d'
   parent: '6a5a3c33-3f8b-42ee-8d50-594bfd95dd32'
 ```
-

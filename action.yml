@@ -2,7 +2,7 @@ name: 'Upload BOM to Dependency-Track'
 author: Patrick Dwyer
 description: 'Uploads a CycloneDX software bill of materials to a Dependency-Track server'
 inputs:
-  serverhostname:
+  server-hostname:
     description: 'Dependency-Track hostname'
     required: true
   port:
@@ -13,48 +13,89 @@ inputs:
     description: 'Dependency-Track protocol'
     required: false
     default: 'https'
-  apikey:
+  api-key:
     description: 'Dependency-Track API key'
     required: true
   project:
     description: 'Project in Dependency-Track'
     required: false
-  projectname:
+  project-name:
     description: 'Project name in Dependency-Track'
     required: false
-  projectversion:
+  project-version:
     description: 'Project version in Dependency-Track'
     required: false
-  projecttags:
+  project-tags:
     description: 'Comma-separated list of tags (available in DT v4.12 and later)'
-    default: ''
     required: false
-  autocreate:
-    description: "Automatically create the project in Dependency-Track if it doesn't exist"
-    default: 'false'
+  auto-create:
+    description: "Automatically create the project in Dependency-Track if it doesn't exist (defaults to false)"
     required: false
-  bomfilename:
-    description: 'Path and filename of the BOM'
-    default: 'bom.xml'
+  bom-filename:
+    description: 'Path and filename of the BOM (defaults to bom.xml)'
     required: false
   parent:
     description: 'Parent project UUID in Dependency-Track (available in DT v4.8 and later)'
     required: false
-  parentname:
+  parent-name:
     description: 'Parent project name in Dependency-Track (available in DT v4.8 and later)'
     required: false
-  parentversion:
+  parent-version:
     description: 'Parent project version in Dependency-Track (available in DT v4.8 and later)'
     required: false
+  is-latest:
+    description: 'Set the property isLatest to the uploaded Version (defaults to false)'
+    required: false
+  #
+  # Deprecated inputs.
+  #
+  serverhostname:
+    description: 'DEPRECATED: use server-hostname instead. Will be removed in the next major release.'
+    deprecationMessage: "Use 'server-hostname' instead. Will be removed in the next major release."
+    required: false
+  apikey:
+    description: 'DEPRECATED: use api-key instead. Will be removed in the next major release.'
+    deprecationMessage: "Use 'api-key' instead. Will be removed in the next major release."
+    required: false
+  projectname:
+    description: 'DEPRECATED: use project-name instead. Will be removed in the next major release.'
+    deprecationMessage: "Use 'project-name' instead. Will be removed in the next major release."
+    required: false
+  projectversion:
+    description: 'DEPRECATED: use project-version instead. Will be removed in the next major release.'
+    deprecationMessage: "Use 'project-version' instead. Will be removed in the next major release."
+    required: false
+  projecttags:
+    description: 'DEPRECATED: use project-tags instead. Will be removed in the next major release.'
+    deprecationMessage: "Use 'project-tags' instead. Will be removed in the next major release."
+    required: false
+  autocreate:
+    description: 'DEPRECATED: use auto-create instead. Will be removed in the next major release.'
+    deprecationMessage: "Use 'auto-create' instead. Will be removed in the next major release."
+    required: false
+  bomfilename:
+    description: 'DEPRECATED: use bom-filename instead. Will be removed in the next major release.'
+    deprecationMessage: "Use 'bom-filename' instead. Will be removed in the next major release."
+    required: false
+  parentname:
+    description: 'DEPRECATED: use parent-name instead. Will be removed in the next major release.'
+    deprecationMessage: "Use 'parent-name' instead. Will be removed in the next major release."
+    required: false
+  parentversion:
+    description: 'DEPRECATED: use parent-version instead. Will be removed in the next major release.'
+    deprecationMessage: "Use 'parent-version' instead. Will be removed in the next major release."
+    required: false
   isLatest:
-    description: 'Set the property isLatest to the uploaded Version'
-    default: 'false'
+    description: 'DEPRECATED: use is-latest instead. Will be removed in the next major release.'
+    deprecationMessage: "Use 'is-latest' instead. Will be removed in the next major release."
     required: false
 outputs:
   token:
     description: 'The token response from Dependency-Track after SBOM file upload'
-  projectUuid:
+  project-uuid:
     description: 'The UUID of the project the BOM was uploaded to (available in DT v5.0.0 and later)'
+  projectUuid:
+    description: 'DEPRECATED: use project-uuid instead. Will be removed in the next major release.'
 runs:
   using: 'node24'
   main: 'dist/index.js'
