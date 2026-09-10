@@ -1,42 +1,42 @@
 import * as fs from 'node:fs';
 import * as core from '@actions/core';
 
+function getInput(name, deprecatedName, defaultValue = '') {
+  return core.getInput(name) || core.getInput(deprecatedName) || defaultValue;
+}
+
 async function run() {
   try {
-    const serverHostname = core.getInput('serverhostname');
+    const serverHostname = getInput('server-hostname', 'serverhostname');
     const port = core.getInput('port');
     const protocol = core.getInput('protocol');
-    const apiKey = core.getInput('apikey');
+    const apiKey = getInput('api-key', 'apikey');
     core.setSecret(apiKey);
     const project = core.getInput('project');
-    const projectName = core.getInput('projectname');
-    const projectVersion = core.getInput('projectversion');
-    const projectTags = core.getInput('projecttags');
-    const autoCreate = core.getInput('autocreate') !== 'false';
-    const bomFilename = core.getInput('bomfilename');
+    const projectName = getInput('project-name', 'projectname');
+    const projectVersion = getInput('project-version', 'projectversion');
+    const projectTags = getInput('project-tags', 'projecttags');
+    const autoCreate = getInput('auto-create', 'autocreate', 'false') !== 'false';
+    const bomFilename = getInput('bom-filename', 'bomfilename', 'bom.xml');
     const parent = core.getInput('parent');
-    const parentName = core.getInput('parentname');
-    const parentVersion = core.getInput('parentversion');
-    const isLatest = core.getInput('isLatest') !== 'false';
+    const parentName = getInput('parent-name', 'parentname');
+    const parentVersion = getInput('parent-version', 'parentversion');
+    const isLatest = getInput('is-latest', 'isLatest', 'false') !== 'false';
 
     if (protocol !== "http" && protocol !== "https") {
-      throw 'protocol "' + protocol + '" not supported, must be one of: https, http'
+      throw new Error(`protocol "${protocol}" not supported, must be one of: https, http`);
     }
 
     if (project === "" && (projectName === "" || projectVersion === "")) {
-      throw 'project or projectName + projectVersion must be set'
+      throw new Error('project or project-name + project-version must be set');
     }
 
     if (!autoCreate && project === "") {
-      throw 'project can\'t be empty if autoCreate is false'
-    }
-
-    if (project === "" && (projectName === "" || projectVersion === "")) {
-      throw 'project or projectName + projectVersion must be set'
+      throw new Error("project can't be empty if auto-create is false");
     }
 
     if ((parentName === "" && parentVersion !== "") || (parentName !== "" && parentVersion === "")) {
-      throw 'parentName + parentVersion must both be set'
+      throw new Error('parent-name + parent-version must both be set');
     }
 
     core.info(`Reading BOM: ${bomFilename}...`);
@@ -94,6 +94,9 @@ async function run() {
       const responseJson = await response.json();
       core.setOutput('token', responseJson.token);
       if (responseJson.projectUuid) {
+        core.setOutput('project-uuid', responseJson.projectUuid);
+
+        // Deprecated, remove in next major version.
         core.setOutput('projectUuid', responseJson.projectUuid);
       }
       core.info('Finished uploading BOM to Dependency-Track server.');
@@ -106,7 +109,7 @@ async function run() {
     }
 
   } catch (error) {
-    core.setFailed(error.message);
+    core.setFailed(error instanceof Error ? error.message : String(error));
   }
 }
 

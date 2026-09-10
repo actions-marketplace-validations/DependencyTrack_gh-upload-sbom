@@ -19328,37 +19328,37 @@ function info(message) {
 }
 
 // index.js
+function getInput2(name, deprecatedName, defaultValue = "") {
+  return getInput(name) || getInput(deprecatedName) || defaultValue;
+}
 async function run() {
   try {
-    const serverHostname = getInput("serverhostname");
+    const serverHostname = getInput2("server-hostname", "serverhostname");
     const port = getInput("port");
     const protocol = getInput("protocol");
-    const apiKey = getInput("apikey");
+    const apiKey = getInput2("api-key", "apikey");
     setSecret(apiKey);
     const project = getInput("project");
-    const projectName = getInput("projectname");
-    const projectVersion = getInput("projectversion");
-    const projectTags = getInput("projecttags");
-    const autoCreate = getInput("autocreate") !== "false";
-    const bomFilename = getInput("bomfilename");
+    const projectName = getInput2("project-name", "projectname");
+    const projectVersion = getInput2("project-version", "projectversion");
+    const projectTags = getInput2("project-tags", "projecttags");
+    const autoCreate = getInput2("auto-create", "autocreate", "false") !== "false";
+    const bomFilename = getInput2("bom-filename", "bomfilename", "bom.xml");
     const parent = getInput("parent");
-    const parentName = getInput("parentname");
-    const parentVersion = getInput("parentversion");
-    const isLatest = getInput("isLatest") !== "false";
+    const parentName = getInput2("parent-name", "parentname");
+    const parentVersion = getInput2("parent-version", "parentversion");
+    const isLatest = getInput2("is-latest", "isLatest", "false") !== "false";
     if (protocol !== "http" && protocol !== "https") {
-      throw 'protocol "' + protocol + '" not supported, must be one of: https, http';
+      throw new Error(`protocol "${protocol}" not supported, must be one of: https, http`);
     }
     if (project === "" && (projectName === "" || projectVersion === "")) {
-      throw "project or projectName + projectVersion must be set";
+      throw new Error("project or project-name + project-version must be set");
     }
     if (!autoCreate && project === "") {
-      throw "project can't be empty if autoCreate is false";
-    }
-    if (project === "" && (projectName === "" || projectVersion === "")) {
-      throw "project or projectName + projectVersion must be set";
+      throw new Error("project can't be empty if auto-create is false");
     }
     if (parentName === "" && parentVersion !== "" || parentName !== "" && parentVersion === "") {
-      throw "parentName + parentVersion must both be set";
+      throw new Error("parent-name + parent-version must both be set");
     }
     info(`Reading BOM: ${bomFilename}...`);
     let bomContents = fs3.readFileSync(bomFilename);
@@ -19404,6 +19404,7 @@ async function run() {
       const responseJson = await response.json();
       setOutput("token", responseJson.token);
       if (responseJson.projectUuid) {
+        setOutput("project-uuid", responseJson.projectUuid);
         setOutput("projectUuid", responseJson.projectUuid);
       }
       info("Finished uploading BOM to Dependency-Track server.");
@@ -19415,7 +19416,7 @@ async function run() {
       setFailed("Failed response status code:" + response.status);
     }
   } catch (error2) {
-    setFailed(error2.message);
+    setFailed(error2 instanceof Error ? error2.message : String(error2));
   }
 }
 run();
