@@ -106,7 +106,7 @@ Both outputs are still populated, so existing workflows keep working until the n
 
 With project name and version:
 ```yml
-uses: DependencyTrack/gh-upload-sbom@v3
+uses: DependencyTrack/gh-upload-sbom@v4
 with:
   server-hostname: 'example.com'
   api-key: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
@@ -118,7 +118,7 @@ with:
 
 With project name, version and tags:
 ```yml
-uses: DependencyTrack/gh-upload-sbom@v3
+uses: DependencyTrack/gh-upload-sbom@v4
 with:
   server-hostname: 'example.com'
   api-key: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
@@ -131,7 +131,7 @@ with:
 
 With protocol, port and project name:
 ```yml
-uses: DependencyTrack/gh-upload-sbom@v3
+uses: DependencyTrack/gh-upload-sbom@v4
 with:
   protocol: ${{ secrets.DEPENDENCYTRACK_PROTOCOL }}
   server-hostname: ${{ secrets.DEPENDENCYTRACK_HOSTNAME }}
@@ -145,7 +145,7 @@ with:
 
 With project uuid:
 ```yml
-uses: DependencyTrack/gh-upload-sbom@v3
+uses: DependencyTrack/gh-upload-sbom@v4
 with:
   server-hostname: 'example.com'
   api-key: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
@@ -154,7 +154,7 @@ with:
 
 With protocol, port, project name and parent name:
 ```yml
-uses: DependencyTrack/gh-upload-sbom@v3
+uses: DependencyTrack/gh-upload-sbom@v4
 with:
   protocol: ${{ secrets.DEPENDENCYTRACK_PROTOCOL }}
   server-hostname: ${{ secrets.DEPENDENCYTRACK_HOSTNAME }}
@@ -170,7 +170,7 @@ with:
 
 With parent uuid:
 ```yml
-uses: DependencyTrack/gh-upload-sbom@v3
+uses: DependencyTrack/gh-upload-sbom@v4
 with:
   server-hostname: 'example.com'
   api-key: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
